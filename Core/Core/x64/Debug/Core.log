@@ -1,0 +1,54 @@
+﻿  Model.cpp
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(118,62): error C2064: term does not evaluate to a function taking 1 arguments
+  (compiling source file 'Model.cpp')
+      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(118,62):
+      the template instantiation context (the oldest one first) is
+          C:\Users\Home\source\repos\C++\AI_Core\Core\Core\Model.h(7,34):
+          see reference to class template instantiation 'std::unordered_map<TYPE,Node *,std::hash<TYPE>,std::equal_to<TYPE>,std::allocator<std::pair<const TYPE,Node *>>>' being compiled
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\unordered_map(61,30):
+          see reference to class template instantiation 'std::_Hash<std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>>' being compiled
+          with
+          [
+              _Kty=TYPE,
+              _Ty=Node *,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Alloc=std::allocator<std::pair<const TYPE,Node *>>
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(1155,10):
+          while compiling class template member function 'void std::_Hash<std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>>::clear(void) noexcept'
+          with
+          [
+              _Kty=TYPE,
+              _Ty=Node *,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Alloc=std::allocator<std::pair<const TYPE,Node *>>
+          ]
+              C:\Users\Home\source\repos\C++\AI_Core\Core\Core\Model.cpp(19,18):
+              see the first reference to 'std::_Hash<std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>>::clear' in 'Model::clear'
+          with
+          [
+              _Kty=TYPE,
+              _Ty=Node *,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Alloc=std::allocator<std::pair<const TYPE,Node *>>
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(1168,23):
+          see reference to variable template 'const bool _Nothrow_hash<std::_Umap_traits<TYPE,Node *,std::_Uhash_compare<TYPE,std::hash<TYPE>,std::equal_to<TYPE> >,std::allocator<std::pair<TYPE const ,Node *> >,0>,TYPE>' being compiled
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(118,62):
+          while compiling class template member function 'size_t std::_Uhash_compare<_Kty,_Hasher,_Keyeq>::operator ()<TYPE>(const _Keyty &) noexcept(<expr>) const'
+          with
+          [
+              _Kty=TYPE,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Keyty=TYPE
+          ]
+          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(141,72):
+          see reference to variable template 'const bool _Nothrow_hash<std::hash<TYPE>,TYPE>' being compiled
+  
+C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.44.35207\include\xhash(118,5): error C2056: illegal expression
+  (compiling source file 'Model.cpp')
+  

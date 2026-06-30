@@ -11,7 +11,7 @@ struct TYPE
 struct Node
 {
 	TYPE value;
-	double possibility;
+	double possibility; // вероятность перехода 
 	std::vector<std::shared_ptr<Node>> nearestNodes;
 
 };
