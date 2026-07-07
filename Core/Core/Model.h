@@ -12,7 +12,7 @@ public:
 	void createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet));
 	size_t Size();
 	TYPE* retArrValue();
-	double** retMatrix—onnexion();
+	double** retMatrix—onnexion(); 
 
 };
 
