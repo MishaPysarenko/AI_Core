@@ -1,10 +1,10 @@
 #pragma once
 #include"Node.h"
 #include <unordered_map>
-#define DATA_SET void* //заглушка
+#define DATA_SET void* //глушилка
 class Model
 {
-	std::unordered_map<TYPE, Node*> valueModel;
+	std::unordered_map<TYPE, std::shared_ptr<Node>> valueModel;
 public:
 	Model() = default;
 	Model(DATA_SET dataSet, TYPE*(*operationsWDataSet)(DATA_SET dataSet));

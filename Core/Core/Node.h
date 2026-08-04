@@ -2,9 +2,10 @@
 #include<string>
 #include<vector>
 #include<memory>
+#include <unordered_map>
 struct TYPE
 {
-	void* pData;
+	void* pData; //универсал указатель
 	size_t sizeData;
 	bool (*compare) (TYPE); // шаблонная функция сравнения определенных типов данных (для юзера)
 	bool operator == (TYPE compared) { return compare(compared); } //перегрузка операторов сравнения 
@@ -20,6 +21,6 @@ struct Node
 {
 	TYPE value;
 	double possibility; 
-	std::vector<std::shared_ptr<Pair>> nearestNodes;
+	std::unordered_map<TYPE, std::shared_ptr<Pair>> nearestNodes;
 
 };
