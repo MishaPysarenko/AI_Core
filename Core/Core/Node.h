@@ -11,6 +11,9 @@ struct TYPE
 	bool operator == (TYPE compared) { return compare(compared); } //перегрузка операторов сравнения 
 	bool operator != (TYPE compared) { return !(compare(compared)); } //перегрузка операторов сравнения 
 };
+
+struct Node;
+
 struct Pair
 {
 	std::shared_ptr<Node> nearNode;

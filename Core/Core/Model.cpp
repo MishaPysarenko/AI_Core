@@ -1,11 +1,17 @@
 #include "Model.h"
-
-Model::Model(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
+template <typename DATA_SET>
+Model<DATA_SET>::Model(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
 {
 	createModel(dataSet, operationsWDataSet);
 }
 
-void Model::createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
+template<typename DATA_SET>
+Model<DATA_SET>::Model(valueChain& A, valueChain& B)
+{
+}
+
+template <typename DATA_SET>
+void Model<DATA_SET>::createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
 {
 	TYPE* arrayValue = operationsWDataSet(dataSet);
 	size_t n = arrayValue[0].sizeData; //резервирование самого первого элемента массива под сайз(а не как указатель)
@@ -67,17 +73,20 @@ void Model::createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET d
  
 }
 
-size_t Model::Size()
+template <typename DATA_SET>
+size_t Model<DATA_SET>::Size()
 {
 	return valueModel.size();
 }
 
-void Model::clear() 
+template <typename DATA_SET>
+void Model<DATA_SET>::clear() 
 {
 	valueModel.clear();
 }
 
-TYPE* Model::retArrValue()
+template <typename DATA_SET>
+TYPE* Model<DATA_SET>::retArrValue()
 {
 	TYPE* value = new TYPE[valueModel.size()];
 	size_t iterator = 0;
@@ -89,7 +98,8 @@ TYPE* Model::retArrValue()
 	return value;
 }
 
-double** Model::retMatrixСonnexion()
+template <typename DATA_SET>
+double** Model<DATA_SET>::retMatrixСonnexion()
 {
 	//1 создание асоциативного массива с определенным порядком значений и их индексов 
 	double** connexion/*связи*/ = new double* [valueModel.size()];
@@ -97,7 +107,7 @@ double** Model::retMatrixСonnexion()
 	std::unordered_map<size_t ,TYPE> array;
 	for (size_t i = 0; i < valueModel.size(); i++)
 		array[i] = tempARR[i];
-	delete tempARR;
+	delete[] tempARR;
 
 	//2 обычный цикл фор который итеррируеться с помощью обычного итератора по асоциативному массиву 
 	for (size_t i = 0; i < array.size(); i++)
@@ -127,7 +137,69 @@ double** Model::retMatrixСonnexion()
 	return connexion;
 }
 
+template<typename DATA_SET>
+Model<DATA_SET>* Model<DATA_SET>::operator+(Model& fusion)
+{
+	return Model();
+}
 
+template<typename DATA_SET>
+Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
+{
+	return Model();
+}
 
+template<typename DATA_SET>
+void Model<DATA_SET>::operator+=(Model& fusion)
+{
+	for (auto it : fusion->valueModel)
+	{
+		if (valueModel.find(it->first) == valueModel.end())
+		{
+			valueModel[it->first] = it->second;
+		}
+	}
+	//дз операторы сравнения 
+	//суть: перебрать все ноды и если все совпали то =
+	//если не совпали то !=
+	for (auto &it : valueModel)
+	{
+		if (fusion->valueModel.find(it.first) != fusion.valueModel.end())
+		{
+			it.second->possibility += fusion.valueModel.find(it.first)->second->possibility;
+			it.second->possibility /= 2;
+		}
+	}
 
+	//добавить недостающие связи
+	// у связей коотрые былa веротность перехода сделать среднее ареф.
+	for (auto &it : valueModel)
+	{
+		for (auto pair : it.second->nearestNodes)
+		{
+			it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
+			it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
+		}
+
+	}
+}
+
+template<typename DATA_SET>
+void Model<DATA_SET>::operator-=(Model& fusion)
+{
+	fusion->valueModel;
+
+}
+
+template<typename DATA_SET>
+bool Model<DATA_SET>::operator==(Model& compare)
+{
+	return false;
+}
+
+template<typename DATA_SET>
+bool Model<DATA_SET>::operator!=(Model& compare)
+{
+	return false;
+}
 
