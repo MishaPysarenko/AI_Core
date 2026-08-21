@@ -159,10 +159,8 @@ void Model<DATA_SET>::operator+=(Model& fusion)
 			valueModel[it->first] = it->second;
 		}
 	}
-	//дз операторы сравнения 
-	//суть: перебрать все ноды и если все совпали то =
-	//если не совпали то !=
-	for (auto &it : valueModel)
+
+	for (auto& it : valueModel)
 	{
 		if (fusion->valueModel.find(it.first) != fusion.valueModel.end())
 		{
@@ -173,10 +171,23 @@ void Model<DATA_SET>::operator+=(Model& fusion)
 
 	//добавить недостающие связи
 	// у связей коотрые былa веротность перехода сделать среднее ареф.
-	for (auto &it : valueModel)
+	for (auto& it : fusion.valueModel)
 	{
+		for (auto& nodes : valueModel.find(it.first).second->nearestNodes)
+		{
+			if (it.second->nearestNodes.find(nodes) == valueModel.end())
+			{
+				nodes->nearestNodes[it.first] = it.second->nearestNodes.find(it.first);
+			}
+			else
+			{
+
+			}
+
+		}
 		for (auto pair : it.second->nearestNodes)
 		{
+			//fusion value model взять потом ит ферст потом найти в нашем валую модел ит ферст и потом сравнить неарнодс и сравнить каждую связь к ноде и если не совпали добавить в наш модел по ит феспт по неарнод новую связь и потом у этих связей среддне ариф 
 			it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
 			it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
 		}
@@ -192,14 +203,40 @@ void Model<DATA_SET>::operator-=(Model& fusion)
 }
 
 template<typename DATA_SET>
-bool Model<DATA_SET>::operator==(Model& compare)
+double Model<DATA_SET>::operator==(Model& compare)
 {
-	return false;
+	double equalElements = 0;
+
+	for (auto it : compare->valueModel)
+	{
+		if (valueModel.find(it->first) != valueModel.end())
+		{
+			equalElements++;
+		}
+	}
+	if (equalElements == 0)
+	{
+		return 0;
+	}
+	return valueModel.size() / equalElements;
 }
 
 template<typename DATA_SET>
-bool Model<DATA_SET>::operator!=(Model& compare)
+double Model<DATA_SET>::operator!=(Model& compare)
 {
-	return false;
+	double equalElements = 0;
+
+	for (auto it : compare->valueModel)
+	{
+		if (valueModel.find(it->first) == valueModel.end())
+		{
+			equalElements++;
+		}
+	}
+	if (equalElements == 0)
+	{
+		return 0;
+	}
+	return valueModel.size() / equalElements;
 }
 

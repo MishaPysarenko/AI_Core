@@ -1,5 +1,2 @@
-﻿  Main.cpp
-C:\Users\Home\source\repos\C++\AI_Core\Core\Core\Main.cpp(2,6): warning C4326: return type of 'main' should be 'int' instead of 'void'
-  Model.cpp
-  Generating Code...
-  Core.vcxproj -> C:\Users\Home\source\repos\C++\AI_Core\Core\x64\Debug\Core.exe
+﻿  Model.cpp
+  Core.vcxproj -> C:\Users\Mike\source\repos\C++\AI_Core\Core\x64\Debug\Core.exe

@@ -1,21 +1,21 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\",
+  "WorkspaceRootPath": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|solutionrelative:Core\\Model.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
-      "RelativeMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|solutionrelative:Core\\Node.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|solutionrelative:Core\\Model.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
+      "RelativeMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|solutionrelative:Core\\Node.h||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}",
       "RelativeMoniker": "D:0:0:{0FB3BD29-A25C-48D4-82A5-47F8A7DC289C}|Core\\Core.vcxproj|solutionrelative:Core\\Main.cpp||{D0E1A5C6-B359-4E41-9B60-3365922C2A22}"
     }
   ],
@@ -32,34 +32,35 @@
               "$type": "Document",
               "DocumentIndex": 0,
               "Title": "Model.cpp",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
+              "DocumentMoniker": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
               "RelativeDocumentMoniker": "Core\\Model.cpp",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
+              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
               "RelativeToolTip": "Core\\Model.cpp",
-              "ViewState": "AgIAACIAAAAAAAAAAAAuwKMAAAAYAAAAAAAAAA==",
+              "ViewState": "AgIAAJgAAAAAAAAAAAAYwKsAAAAdAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-06-30T17:51:44.45Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 1,
               "Title": "Model.h",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h",
+              "DocumentMoniker": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h",
               "RelativeDocumentMoniker": "Core\\Model.h",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h",
+              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.h",
               "RelativeToolTip": "Core\\Model.h",
-              "ViewState": "AgIAAAYAAAAAAAAAAAAAAB0AAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAAA8AAAAAAAAAAAAAAB8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-06-26T17:10:22.831Z"
+              "WhenOpened": "2026-06-26T17:10:22.831Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "Node.h",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h",
+              "DocumentMoniker": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h",
               "RelativeDocumentMoniker": "Core\\Node.h",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h",
+              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Node.h",
               "RelativeToolTip": "Core\\Node.h",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAABoAAAA9AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
@@ -69,9 +70,9 @@
               "$type": "Document",
               "DocumentIndex": 3,
               "Title": "Main.cpp",
-              "DocumentMoniker": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp",
+              "DocumentMoniker": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp",
               "RelativeDocumentMoniker": "Core\\Main.cpp",
-              "ToolTip": "C:\\Users\\Home\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp",
+              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Main.cpp",
               "RelativeToolTip": "Core\\Main.cpp",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAMAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",

@@ -28,8 +28,8 @@ public:
 	void operator += (Model& fusion);//сплюсовать и записать в текущею
 	void operator -= (Model& fusion);//отнять и записать в текущею
 
-	bool operator == (Model& compare);//сравнение моделей
-	bool operator != (Model& compare);//сравнение моделей
+	double operator == (Model& compare);//сравнение моделей
+	double operator != (Model& compare);//сравнение моделей
 
 	TYPE* generationPrompt(TYPE* prompt, size_t amountToken);
 };
