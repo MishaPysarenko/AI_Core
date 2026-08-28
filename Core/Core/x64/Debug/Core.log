@@ -1,10 +1,2 @@
-﻿  Main.cpp
-C:\C++\AI_Core\Core\Core\Main.cpp(2,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
-  Model.cpp
-C:\C++\AI_Core\Core\Core\Model.cpp(196,79): error C2760: синтаксическая ошибка: непредвиденный элемент ")". Ожидается ";"
-C:\C++\AI_Core\Core\Core\Model.cpp(219,85): error C2760: синтаксическая ошибка: непредвиденный элемент "!=". Ожидается "condition"
-C:\C++\AI_Core\Core\Core\Model.cpp(219,150): error C2760: синтаксическая ошибка: непредвиденный элемент ")". Ожидается ";"
-C:\C++\AI_Core\Core\Core\Model.cpp(281,59): error C2760: синтаксическая ошибка: непредвиденный элемент ")". Ожидается ";"
-C:\C++\AI_Core\Core\Core\Model.cpp(304,75): error C2760: синтаксическая ошибка: непредвиденный элемент "!=". Ожидается "condition"
-C:\C++\AI_Core\Core\Core\Model.cpp(304,130): error C2760: синтаксическая ошибка: непредвиденный элемент ")". Ожидается ";"
-  Создание кода...
+﻿  Model.cpp
+  Core.vcxproj -> C:\Users\Mike\source\repos\C++\AI_Core\Core\x64\Debug\Core.exe

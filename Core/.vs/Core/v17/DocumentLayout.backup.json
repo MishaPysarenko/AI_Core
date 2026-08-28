@@ -34,9 +34,9 @@
               "Title": "Model.cpp",
               "DocumentMoniker": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
               "RelativeDocumentMoniker": "Core\\Model.cpp",
-              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp",
-              "RelativeToolTip": "Core\\Model.cpp",
-              "ViewState": "AgIAAIwAAAAAAAAAAAAYwMMAAAABAAAAAAAAAA==",
+              "ToolTip": "C:\\Users\\Mike\\source\\repos\\C\u002B\u002B\\AI_Core\\Core\\Core\\Model.cpp*",
+              "RelativeToolTip": "Core\\Model.cpp*",
+              "ViewState": "AgIAAAgBAAAAAAAAAAAwwBgBAAA7AAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000677|",
               "WhenOpened": "2026-06-30T17:51:44.45Z",
               "EditorCaption": ""
@@ -51,8 +51,7 @@
               "RelativeToolTip": "Core\\Model.h",
               "ViewState": "AgIAAA8AAAAAAAAAAAAAAB8AAAAHAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000680|",
-              "WhenOpened": "2026-06-26T17:10:22.831Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-06-26T17:10:22.831Z"
             },
             {
               "$type": "Document",

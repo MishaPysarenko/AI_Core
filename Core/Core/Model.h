@@ -26,6 +26,8 @@ public:
 	Model* operator + (Model& fusion);//сплюсовать и создать новую модель
 	Model* operator - (Model& fusion);//отнять и создать новую модель
 
+	void operator= (Model& copy);
+
 	void operator += (Model& fusion);//сплюсовать и записать в текущею
 	void operator -= (Model& fusion);//отнять и записать в текущею
 

@@ -193,7 +193,7 @@ Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
 
 		if (NewModel->valueModel.find(it->first) != NewModel->valueModel.end())
 		{
-			for (auto i = NewModel->valueModel.begin(); i != NewModel->valueModel.end())
+			for (auto i = NewModel->valueModel.begin(); i != NewModel->valueModel.end();)
 			{
 				if (it->first == i->first)
 				{
@@ -216,7 +216,7 @@ Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
 			}
 			else
 			{
-				for (auto q = NewModel->valueModel.find(it.first).second->nearestNodes.begin(); != NewModel->valueModel.find(it.first).second->nearestNodes.end())
+				for (auto q = NewModel->valueModel.find(it.first).second->nearestNodes.begin();q != NewModel->valueModel.find(it.first).second->nearestNodes.end();)
 				{
 					if (it->first == q->first)
 					{
@@ -231,6 +231,12 @@ Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
 			}
 		}
 	}
+}
+
+template<typename DATA_SET>
+void Model<DATA_SET>::operator=(Model& copy)
+{
+	valueModel = copy.valueModel;
 }
 
 template<typename DATA_SET>
@@ -278,7 +284,7 @@ void Model<DATA_SET>::operator-=(Model& fusion)
 		
 		if (valueModel.find(it->first) != valueModel.end())
 		{
-			for (auto i = valueModel.begin(); i != valueModel.end())
+			for (auto i = valueModel.begin(); i != valueModel.end();)
 			{
 				if (it->first == i->first) 
 				{
@@ -301,7 +307,7 @@ void Model<DATA_SET>::operator-=(Model& fusion)
 			}
 			else
 			{
-				for (auto q = valueModel.find(it.first).second->nearestNodes.begin(); != valueModel.find(it.first).second->nearestNodes.end())
+				for (auto q = valueModel.find(it.first).second->nearestNodes.begin(); q != valueModel.find(it.first).second->nearestNodes.end();)
 				{
 					if (it->first == q->first)
 					{
