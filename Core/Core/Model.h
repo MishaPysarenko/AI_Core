@@ -15,13 +15,14 @@ class Model
 public:
 	Model() = default;
 	Model(DATA_SET dataSet, TYPE*(*operationsWDataSet)(DATA_SET dataSet));
-	Model(valueChain& A, valueChain& B);
+	Model(Model<DATA_SET>&A, Model<DATA_SET>& B);
+	Model(Model<DATA_SET>& Template);
 	void clear();
 	void createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet));
 	size_t Size();
 	TYPE* retArrValue();
 	double** retMatrixСonnexion(); 
-
+	//посмотреть потом если будет проблема с памятью(оптимизация выдиления памяти)
 	Model* operator + (Model& fusion);//сплюсовать и создать новую модель
 	Model* operator - (Model& fusion);//отнять и создать новую модель
 

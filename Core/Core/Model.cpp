@@ -6,8 +6,17 @@ Model<DATA_SET>::Model(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET da
 }
 
 template<typename DATA_SET>
-Model<DATA_SET>::Model(valueChain& A, valueChain& B)
+Model<DATA_SET>::Model(Model<DATA_SET>& A, Model<DATA_SET>& B)
 {
+	Model<DATA_SET>* temp = A + B;
+	valueModel = temp->valueModel;
+	delete temp;
+}
+
+template<typename DATA_SET>
+Model<DATA_SET>::Model(Model<DATA_SET>& Template)
+{
+	valueModel = Template.valueModel;
 }
 
 template <typename DATA_SET>
@@ -140,39 +149,104 @@ double** Model<DATA_SET>::retMatrixСonnexion()
 template<typename DATA_SET>
 Model<DATA_SET>* Model<DATA_SET>::operator+(Model& fusion)
 {
-	return Model();
+	Model<DATA_SET>* NewModel = new Model<DATA_SET> (this);
+
+	for (auto& it : fusion->valueModel)
+	{
+		if (NewModel->valueModel.find(it->first) == NewModel->valueModel.end())
+		{
+			NewModel->valueModel[it->first] = it->second;
+
+			NewModel->valueModel.find(it->first).second->possibility += fusion.valueModel.find(it.first)->second->possibility;
+			NewModel->valueModel.find(it->first).second->possibility /= 2;
+		}
+		
+		for (auto& nodes : NewModel->valueModel.find(it.first).second->nearestNodes)
+		{
+			if (it.second->nearestNodes.find(nodes) == NewModel->valueModel.end())
+			{
+				nodes->nearestNodes[it.first] = it.second->nearestNodes.find(it.first);
+			}
+			else
+			{
+
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
+			}
+			
+		}
+	}
 }
 
 template<typename DATA_SET>
 Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
 {
-	return Model();
+	Model<DATA_SET>* NewModel = new Model<DATA_SET>(this);
+
+	for (auto& it : fusion->valueModel)
+	{
+		if (NewModel->valueModel.find(it.first) != NewModel->valueModel.end())
+		{
+			NewModel->valueModel.find(it->first).second->possibility *= 2;
+			NewModel->valueModel.find(it->first).second->possibility -= fusion.valueModel.find(it.first)->second->possibility;
+		}
+
+		if (NewModel->valueModel.find(it->first) != NewModel->valueModel.end())
+		{
+			for (auto i = NewModel->valueModel.begin(); i != NewModel->valueModel.end())
+			{
+				if (it->first == i->first)
+				{
+					i = NewModel->valueModel.erase(i);
+					break;
+				}
+				else
+				{
+					++i;
+				}
+			}
+		}
+
+		for (auto& nodes : NewModel->valueModel.find(it.first).second->nearestNodes)
+		{
+			if (it.second->nearestNodes.find(nodes) == NewModel->valueModel.end())
+			{
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch *= 2;
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch -= fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
+			}
+			else
+			{
+				for (auto q = NewModel->valueModel.find(it.first).second->nearestNodes.begin(); != NewModel->valueModel.find(it.first).second->nearestNodes.end())
+				{
+					if (it->first == q->first)
+					{
+						q = NewModel->valueModel.erase(q);
+						break;
+					}
+					else
+					{
+						++q;
+					}
+				}
+			}
+		}
+	}
 }
 
 template<typename DATA_SET>
 void Model<DATA_SET>::operator+=(Model& fusion)
 {
-	for (auto it : fusion->valueModel)
+	for (auto &it : fusion->valueModel)
 	{
 		if (valueModel.find(it->first) == valueModel.end())
 		{
 			valueModel[it->first] = it->second;
-		}
-	}
 
-	for (auto& it : valueModel)
-	{
-		if (fusion->valueModel.find(it.first) != fusion.valueModel.end())
-		{
-			it.second->possibility += fusion.valueModel.find(it.first)->second->possibility;
-			it.second->possibility /= 2;
+			valueModel.find(it->first).second->possibility += fusion.valueModel.find(it.first)->second->possibility;
+			valueModel.find(it->first).second->possibility /= 2;
 		}
-	}
-
-	//добавить недостающие связи
-	// у связей коотрые былa веротность перехода сделать среднее ареф.
-	for (auto& it : fusion.valueModel)
-	{
+		//добавить недостающие связи
+		// у связей коотрые былa веротность перехода сделать среднее ареф.
 		for (auto& nodes : valueModel.find(it.first).second->nearestNodes)
 		{
 			if (it.second->nearestNodes.find(nodes) == valueModel.end())
@@ -182,24 +256,66 @@ void Model<DATA_SET>::operator+=(Model& fusion)
 			else
 			{
 
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
 			}
-
+//fusion value model взять потом ит ферст потом найти в нашем валую модел ит ферст и потом сравнить неарнодс и сравнить каждую связь к ноде и если не совпали добавить в наш модел по ит феспт по неарнод новую связь и потом у этих связей среддне ариф 
 		}
-		for (auto pair : it.second->nearestNodes)
-		{
-			//fusion value model взять потом ит ферст потом найти в нашем валую модел ит ферст и потом сравнить неарнодс и сравнить каждую связь к ноде и если не совпали добавить в наш модел по ит феспт по неарнод новую связь и потом у этих связей среддне ариф 
-			it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
-			it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
-		}
-
 	}
 }
 
 template<typename DATA_SET>
 void Model<DATA_SET>::operator-=(Model& fusion)
 {
-	fusion->valueModel;
 
+	for (auto &it : fusion->valueModel)
+	{
+		if (valueModel.find(it.first) != valueModel.end())
+		{
+			valueModel.find(it->first).second->possibility *= 2;
+			valueModel.find(it->first).second->possibility -= fusion.valueModel.find(it.first)->second->possibility;
+		}
+		
+		if (valueModel.find(it->first) != valueModel.end())
+		{
+			for (auto i = valueModel.begin(); i != valueModel.end())
+			{
+				if (it->first == i->first) 
+				{
+					i = valueModel.erase(i);
+					break;
+				}
+				else 
+				{
+					++i;
+				}	
+			}
+		}
+
+		for (auto& nodes : valueModel.find(it.first).second->nearestNodes)
+		{
+			if (it.second->nearestNodes.find(nodes) == valueModel.end())
+			{
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch *= 2;
+				it.second->nearestNodes.find(it.first)->second->possOfSwitch -= fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
+			}
+			else
+			{
+				for (auto q = valueModel.find(it.first).second->nearestNodes.begin(); != valueModel.find(it.first).second->nearestNodes.end())
+				{
+					if (it->first == q->first)
+					{
+						q = valueModel.erase(q);
+						break;
+					}
+					else
+					{
+						++q;
+					}
+				}
+			}
+		}
+	}
 }
 
 template<typename DATA_SET>
