@@ -1,0 +1,9 @@
+﻿  Main.cpp
+C:\C++\AI_Core\Core\Core\Main.cpp(4,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+  Model.cpp
+  Создание кода
+  79 of 158 functions (50.0%) were compiled, the rest were copied from previous compilation.
+    14 functions were new in current compilation
+    12 functions had inline decision re-evaluated but remain unchanged
+  Создание кода завершено
+  Core.vcxproj -> C:\C++\AI_Core\Core\x64\Release\Core.exe

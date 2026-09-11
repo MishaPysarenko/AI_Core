@@ -1,2 +1,1 @@
-﻿  Model.cpp
-  Core.vcxproj -> C:\Users\Mike\source\repos\C++\AI_Core\Core\x64\Debug\Core.exe
+﻿cl : командная строка  error D8016: несовместимые параметры командной строки "/ZI" и "/GL"

@@ -35,5 +35,7 @@ public:
 	double operator != (Model& compare);//сравнение моделей
 
 	TYPE* generationPrompt(TYPE* prompt, size_t amountToken);
+
+	void saveToFile(std::string fileName);
 };
 

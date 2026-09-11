@@ -1,4 +1,7 @@
 #include "Model.h"
+#include <fstream>
+#include <iostream>
+#include <cstdint>
 template <typename DATA_SET>
 Model<DATA_SET>::Model(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
 {
@@ -360,5 +363,43 @@ double Model<DATA_SET>::operator!=(Model& compare)
 		return 0;
 	}
 	return valueModel.size() / equalElements;
+}
+
+template<typename DATA_SET>
+void Model<DATA_SET>::saveToFile(std::string fileName)
+{
+	std::fstream file(fileName + ".bin", std::ios::out | std::ios::binary);
+
+	size_t memoryUsed;
+
+	std::ifstream file("fileName.bin", std::iostream::binary);
+	constexpr std::size_t BLOCK_SIZE = 1024;
+	std::array<uint8_t, BLOCK_SIZE> buffer;
+
+	while (file)
+	{
+		file.read(
+			reinterpret_cast<char*>(buffer.fileName()),
+			buffer.size()
+		);
+
+		std::size_t bytesRead =
+			static_cast<std::size_t>(file.gcount());
+
+		if (bytesRead == 0)
+			break;
+
+		processBlock(buffer.fileName(), bytesRead); 
+	}
+
+	for (auto it: valueModel)
+	{
+		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value))
+		file << it->second->value;
+		file << it->second->possibility; 
+		file << it->second->nearestNodes;
+		file << it->second->nearNode;
+		file << it->second->possOfSwitch;
+	}		
 }
 
