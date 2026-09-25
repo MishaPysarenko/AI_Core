@@ -372,34 +372,114 @@ void Model<DATA_SET>::saveToFile(std::string fileName)
 
 	size_t memoryUsed;
 
-	std::ifstream file("fileName.bin", std::iostream::binary);
+	file.write(reinterpret_cast<const char*>(&valueModel.size()), sizeof(valueModel.size()));
+	
+	for (auto it: valueModel)
+	{
+		memoryUsed = sizeof(it->second->value);
+		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value)); 
+
+		memoryUsed = sizeof(it->second->possibility);
+		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+		file.write(reinterpret_cast<const char*>(&it->second->possibility), sizeof(it->second->possibility));
+
+	}	
+
+	for (auto it : valueModel)
+	{
+		memoryUsed = sizeof(it->second->value);
+		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value));
+
+		memoryUsed = sizeof(it->second->nearestNodes.size());
+		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+		file.write(reinterpret_cast<const char*>(&it->second->nearestNodes.size()), sizeof(it->second->nearestNodes.size()));
+
+		for (auto pair : it->second->nearestNodes)
+		{
+			memoryUsed = sizeof(pair->second->nearNode->value);
+			file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+			file.write(reinterpret_cast<const char*>(&pair->second->nearNode->value), sizeof(pair->second->nearNode->value));
+
+			memoryUsed = sizeof(pair->second->possOfSwitch);
+			file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+			file.write(reinterpret_cast<const char*>(&pair->second->possOfSwitch), sizeof(pair->second->possOfSwitch));
+
+		}
+	}
+}
+
+template<typename DATA_SET>
+void Model<DATA_SET>::loadToFile(std::string fileName)
+{
+	std::ifstream file(fileName, std::iostream::binary);
+	valueModel.clear();
+	
+	size_t memoryUsed;
+
 	constexpr std::size_t BLOCK_SIZE = 1024;
+
 	std::array<uint8_t, BLOCK_SIZE> buffer;
+
+
 
 	while (file)
 	{
-		file.read(
-			reinterpret_cast<char*>(buffer.fileName()),
-			buffer.size()
-		);
+		TYPE tempValue;
+		double tempPoss;
+		size_t tempAmountNearNodes;
+		size_t tempNearNode;
+		double tempPossOfSwitch;
 
-		std::size_t bytesRead =
-			static_cast<std::size_t>(file.gcount());
+
+
+		//dodelat
+
+		file.read(reinterpret_cast<char*>(&memoryUsed),sizeof(memoryUsed));
+
+		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
+		
+
+		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+
+		file.read(reinterpret_cast<char*>(&tempPoss), memoryUsed);
+		
+
+		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+
+		file.read(reinterpret_cast<char*>(&tempAmountNearNodes), memoryUsed);
+
+		valueModel[tempValue] = { tempValue,tempPoss };
+
+		for (size_t i = 0; i < tempAmountNearNodes; i++)
+		{
+			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+
+			file.read(reinterpret_cast<char*>(&tempNearNode), memoryUsed);
+
+
+			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+
+			file.read(reinterpret_cast<char*>(&tempPossOfSwitch), memoryUsed);
+
+			if (valueModel.find(tempNearNode))
+			{
+				valueModel[tempNearNode] = { {},possOfSwitch };
+			} 
+			else
+			{
+				valueModel.find(tempValue)->second->nearestNodes[tempNearNode] = { };
+			}
+		}
+
+		std::size_t bytesRead = static_cast<std::size_t>(file.gcount());
 
 		if (bytesRead == 0)
 			break;
 
-		processBlock(buffer.fileName(), bytesRead); 
+		processBlock(buffer.data(), bytesRead);
 	}
 
-	for (auto it: valueModel)
-	{
-		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value))
-		file << it->second->value;
-		file << it->second->possibility; 
-		file << it->second->nearestNodes;
-		file << it->second->nearNode;
-		file << it->second->possOfSwitch;
-	}		
 }
 

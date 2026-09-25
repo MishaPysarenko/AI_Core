@@ -22,6 +22,7 @@ public:
 	size_t Size();
 	TYPE* retArrValue();
 	double** retMatrixСonnexion(); 
+
 	//посмотреть потом если будет проблема с памятью(оптимизация выдиления памяти)
 	Model* operator + (Model& fusion);//сплюсовать и создать новую модель
 	Model* operator - (Model& fusion);//отнять и создать новую модель
@@ -37,5 +38,7 @@ public:
 	TYPE* generationPrompt(TYPE* prompt, size_t amountToken);
 
 	void saveToFile(std::string fileName);
+
+	void loadToFile(std::string fileName);
 };
 
