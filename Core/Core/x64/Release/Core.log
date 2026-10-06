@@ -1,4 +1,79 @@
 ﻿  Main.cpp
-C:\C++\AI_Core\Core\Core\Main.cpp(4,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+C:\C++\AI_Core\Core\Core\Main.cpp(6,6): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xmemory(1551,15): error C2280: "std::hash<TYPE>::hash(void)": предпринята попытка ссылки на удаленную функцию
+  (компиляция исходного файла "Main.cpp")
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\type_traits(2492,1):
+      в этом месте создано компилятором: "std::hash<TYPE>::hash"
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\type_traits(2492,1):
+      "std::hash<TYPE>::hash(void)": функция неявно удалена, так как базовый класс вызывает удаленную или недоступную функцию "std::_Conditionally_enabled_hash<_Kty,false>::_Conditionally_enabled_hash(void)".
+          with
+          [
+              _Kty=TYPE
+          ]
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\type_traits(2478,5):
+      "std::_Conditionally_enabled_hash<_Kty,false>::_Conditionally_enabled_hash(void)": функция явно удалена.
+          with
+          [
+              _Kty=TYPE
+          ]
+      C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xmemory(1551,15):
+      контекст создания экземпляра шаблона (сначала самый старый)
+          C:\C++\AI_Core\Core\Core\Node.h(27,50):
+          выполняется компиляция ссылки на экземпляр класс шаблон функции "std::unordered_map<TYPE,std::shared_ptr<Pair>,std::hash<TYPE>,std::equal_to<TYPE>,std::allocator<std::pair<const TYPE,std::shared_ptr<Pair>>>>"
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\unordered_map(58,30):
+          выполняется компиляция ссылки на экземпляр класс шаблон функции "std::_Hash<std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>>"
+          with
+          [
+              _Kty=TYPE,
+              _Ty=std::shared_ptr<Pair>,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Alloc=std::allocator<std::pair<const TYPE,std::shared_ptr<Pair>>>
+          ]
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xhash(269,56):
+          выполняется компиляция ссылки на экземпляр класс шаблон функции "std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>"
+          with
+          [
+              _Kty=TYPE,
+              _Ty=std::shared_ptr<Pair>,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>,
+              _Alloc=std::allocator<std::pair<const TYPE,std::shared_ptr<Pair>>>
+          ]
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\unordered_map(29,29):
+          выполняется компиляция ссылки на экземпляр класс шаблон функции "std::_Uhash_compare<_Kty,_Hasher,_Keyeq>"
+          with
+          [
+              _Kty=TYPE,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>
+          ]
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xhash(67,5):
+          во время компиляции функции-члена класс шаблон "std::_Uhash_compare<_Kty,_Hasher,_Keyeq>::_Uhash_compare(void) noexcept(false)"
+          with
+          [
+              _Kty=TYPE,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>
+          ]
+              C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\unordered_map(98,30):
+              см. первую ссылку на std::_Uhash_compare<_Kty,_Hasher,_Keyeq>::_Uhash_compare "std::unordered_map<TYPE,std::shared_ptr<Node>,std::hash<TYPE>,std::equal_to<TYPE>,std::allocator<std::pair<const TYPE,std::shared_ptr<Node>>>>::unordered_map"
+          with
+          [
+              _Kty=TYPE,
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>
+          ]
+              C:\C++\AI_Core\Core\Core\Model.h(16,2):
+              см. первую ссылку на std::unordered_map<TYPE,std::shared_ptr<Node>,std::hash<TYPE>,std::equal_to<TYPE>,std::allocator<std::pair<const TYPE,std::shared_ptr<Node>>>>::unordered_map "Model<std::fstream>::Model"
+              C:\C++\AI_Core\Core\Core\Main.cpp(9,22):
+              см. первую ссылку на Model<std::fstream>::Model "main"
+          C:\Program Files\Microsoft Visual Studio\18\Community\VC\Tools\MSVC\14.51.36231\include\xhash(69,18):
+          выполняется компиляция ссылки на экземпляр шаблон функции "std::_Compressed_pair<_Hasher,std::_Compressed_pair<_Keyeq,float,true>,true>::_Compressed_pair<std::_Zero_then_variadic_args_t,float>(std::_Zero_then_variadic_args_t,std::_Zero_then_variadic_args_t &&,float &&) noexcept(false)"
+          with
+          [
+              _Hasher=std::hash<TYPE>,
+              _Keyeq=std::equal_to<TYPE>
+          ]
+  
   Model.cpp
-C:\C++\AI_Core\Core\Core\Model.cpp(380,3): error C3878: синтаксическая ошибка: непредвиденный токен "file" после "expression"

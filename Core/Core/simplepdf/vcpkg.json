@@ -1,0 +1,15 @@
+{
+  "$schema": "https://raw.githubusercontent.com/microsoft/vcpkg-tool/main/docs/vcpkg.schema.json",
+  "name": "simplepdf-personal-library",
+  "version-string": "0.1.0",
+  "description": "Example project for a small MuPDF and Cairo based C++ PDF wrapper",
+  "dependencies": [
+    "cairo",
+    "libmupdf",
+    {
+      "name": "pkgconf",
+      "host": true
+    }
+  ]
+}
+

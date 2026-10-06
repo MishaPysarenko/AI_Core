@@ -5,11 +5,11 @@
 #include <unordered_map>
 struct TYPE
 {
-	void* pData; //универсал указатель
+	const void* pData; //универсал указатель
 	size_t sizeData;
-	bool (*compare) (TYPE); // шаблонная функция сравнения определенных типов данных (для юзера)
-	bool operator == (TYPE compared) { return compare(compared); } //перегрузка операторов сравнения 
-	bool operator != (TYPE compared) { return !(compare(compared)); } //перегрузка операторов сравнения 
+	bool (*compare) (TYPE,TYPE); // шаблонная функция сравнения определенных типов данных (для юзера)
+	bool operator == (TYPE compared) { return compare(compared,*this); } //перегрузка операторов сравнения 
+	bool operator != (TYPE compared) { return !(compare(compared,*this)); } //перегрузка операторов сравнения 
 };
 
 struct Node;

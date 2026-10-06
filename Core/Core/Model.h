@@ -14,14 +14,14 @@ class Model
 	valueChain valueModel;
 public:
 	Model() = default;
-	Model(DATA_SET dataSet, TYPE*(*operationsWDataSet)(DATA_SET dataSet));
+	Model(DATA_SET &dataSet, TYPE*(*operationsWDataSet)(DATA_SET &dataSet));
 	Model(Model<DATA_SET>&A, Model<DATA_SET>& B);
 	Model(Model<DATA_SET>& Template);
 	void clear();
-	void createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet));
+	void createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet));
 	size_t Size();
 	TYPE* retArrValue();
-	double** retMatrixСonnexion(); 
+	double** retMatrixConnexion();
 
 	//посмотреть потом если будет проблема с памятью(оптимизация выдиления памяти)
 	Model* operator + (Model& fusion);//сплюсовать и создать новую модель

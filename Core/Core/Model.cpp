@@ -3,7 +3,7 @@
 #include <iostream>
 #include <cstdint>
 template <typename DATA_SET>
-Model<DATA_SET>::Model(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
+Model<DATA_SET>::Model(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet))
 {
 	createModel(dataSet, operationsWDataSet);
 }
@@ -23,7 +23,7 @@ Model<DATA_SET>::Model(Model<DATA_SET>& Template)
 }
 
 template <typename DATA_SET>
-void Model<DATA_SET>::createModel(DATA_SET dataSet, TYPE* (*operationsWDataSet)(DATA_SET dataSet))
+void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet))
 {
 	TYPE* arrayValue = operationsWDataSet(dataSet);
 	size_t n = arrayValue[0].sizeData; //резервирование самого первого элемента массива под сайз(а не как указатель)
@@ -111,7 +111,7 @@ TYPE* Model<DATA_SET>::retArrValue()
 }
 
 template <typename DATA_SET>
-double** Model<DATA_SET>::retMatrixСonnexion()
+double** Model<DATA_SET>::retMatrixConnexion()
 {
 	//1 создание асоциативного массива с определенным порядком значений и их индексов 
 	double** connexion/*связи*/ = new double* [valueModel.size()];
@@ -422,64 +422,47 @@ void Model<DATA_SET>::loadToFile(std::string fileName)
 
 	std::array<uint8_t, BLOCK_SIZE> buffer;
 
+	TYPE tempValue;
+	double tempPoss;
+	size_t tempAmountNearNodes;
+	size_t tempNearNode;
+	size_t tempAmountValue;
+	double tempPossOfSwitch;
+
+	file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
+
+	for (size_t i = 0; i < tempAmountValue; i++)
+	{
+		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
+
+		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+		file.read(reinterpret_cast<char*>(&tempPoss), sizeof(tempPoss));
+
+		valueModel[tempValue] = { tempValue,tempPoss,{} };
+	}
 
 
 	while (file)
 	{
-		TYPE tempValue;
-		double tempPoss;
-		size_t tempAmountNearNodes;
-		size_t tempNearNode;
-		double tempPossOfSwitch;
-
-
-
-		//dodelat
-
-		file.read(reinterpret_cast<char*>(&memoryUsed),sizeof(memoryUsed));
-
+		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
 		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
-		
 
 		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+		file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
 
-		file.read(reinterpret_cast<char*>(&tempPoss), memoryUsed);
-		
+		auto tempNode = valueModel.find(tempValue)->second;
 
-		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-
-		file.read(reinterpret_cast<char*>(&tempAmountNearNodes), memoryUsed);
-
-		valueModel[tempValue] = { tempValue,tempPoss };
-
-		for (size_t i = 0; i < tempAmountNearNodes; i++)
+		for (size_t i = 0; i < tempAmountValue; i++)
 		{
 			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-
-			file.read(reinterpret_cast<char*>(&tempNearNode), memoryUsed);
-
+			file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
 
 			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+			file.read(reinterpret_cast<char*>(&tempPossOfSwitch), sizeof(tempPossOfSwitch));
 
-			file.read(reinterpret_cast<char*>(&tempPossOfSwitch), memoryUsed);
-
-			if (valueModel.find(tempNearNode))
-			{
-				valueModel[tempNearNode] = { {},possOfSwitch };
-			} 
-			else
-			{
-				valueModel.find(tempValue)->second->nearestNodes[tempNearNode] = { };
-			}
+			tempNode->nearestNodes[tempValue] = { valueModel.find(tempValue), tempPossOfSwitch };
 		}
-
-		std::size_t bytesRead = static_cast<std::size_t>(file.gcount());
-
-		if (bytesRead == 0)
-			break;
-
-		processBlock(buffer.data(), bytesRead);
 	}
-
 }
 
