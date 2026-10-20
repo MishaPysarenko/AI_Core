@@ -1,1 +1,7 @@
-﻿cl : командная строка  error D8016: несовместимые параметры командной строки "/ZI" и "/GL"
+﻿  Main.cpp
+C:\Users\Mike\source\repos\C++\AI_Core\Core\Core\Main.cpp(23,1): warning C4326: возвращаемый тип "main" должен быть "int", а не "void"
+LINK : warning LNK4075: не учитывается "/INCREMENTAL" из-за спецификации "/LTCG"
+  Создание кода
+  Not all modules are compiled with -Gy (function comdat), build without incremental LTCG.
+  Создание кода завершено
+  Core.vcxproj -> C:\Users\Mike\source\repos\C++\AI_Core\Core\x64\Debug\Core.exe

@@ -3,13 +3,43 @@
 #include<vector>
 #include<memory>
 #include <unordered_map>
+#include <stdexcept>
+#include <functional>
 struct TYPE
 {
-	const void* pData; //универсал указатель
-	size_t sizeData;
-	bool (*compare) (TYPE,TYPE); // шаблонная функция сравнения определенных типов данных (для юзера)
-	bool operator == (TYPE compared) { return compare(compared,*this); } //перегрузка операторов сравнения 
-	bool operator != (TYPE compared) { return !(compare(compared,*this)); } //перегрузка операторов сравнения 
+    void* pData = nullptr;
+    size_t sizeData;
+
+    bool (*compare)(TYPE, TYPE);
+    size_t(*hash)(TYPE);
+
+    bool operator==(const TYPE& compared) const
+    {
+        if (sizeData != compared.sizeData)
+            return false;
+
+        if (sizeData == 0)
+            return true;
+
+        if (!pData || !compared.pData)
+            return false;
+
+        return std::memcmp(pData, compared.pData, sizeData) == 0;
+    }
+
+    bool operator!=(const TYPE& compared) const
+    {
+        return !(*this == compared);
+    }
+};
+
+template<>
+struct std::hash<TYPE>
+{
+    size_t operator()(const TYPE& value) const
+    {
+        return value.hash(value);
+    }
 };
 
 struct Node;

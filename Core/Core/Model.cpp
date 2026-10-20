@@ -2,6 +2,7 @@
 #include <fstream>
 #include <iostream>
 #include <cstdint>
+
 template <typename DATA_SET>
 Model<DATA_SET>::Model(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet))
 {
@@ -28,7 +29,7 @@ void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)
 	TYPE* arrayValue = operationsWDataSet(dataSet);
 	size_t n = arrayValue[0].sizeData; //резервирование самого первого элемента массива под сайз(а не как указатель)
 
-	for (size_t i = 1; i < n; i++)
+	for (size_t i = 1; i < n - 1; i++)
 	{
 		if (valueModel.find(arrayValue[i]) == valueModel.end())
 		{
@@ -36,7 +37,6 @@ void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)
 			temp->value = arrayValue[i];
 			temp->possibility = 1;
 			valueModel[arrayValue[i]] = temp;
-
  		}
 		else
 		{
@@ -47,6 +47,13 @@ void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)
 		if (n > 2)
 		{
 			auto current = valueModel.find(arrayValue[i])->second; // первый   
+			if (valueModel.find(arrayValue[i + 1]) == valueModel.end())
+			{
+				std::shared_ptr<Node> temp = std::make_shared<Node>();
+				temp->value = arrayValue[i+1];
+				temp->possibility = 1;
+				valueModel[arrayValue[i+1]] = temp;
+			}
 			auto successive = valueModel.find(arrayValue[i + 1])->second; // последующие
 
 			auto temp = current->nearestNodes.find(successive->value);
@@ -68,14 +75,12 @@ void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)
 
 	for (auto &it: valueModel)
 	{
-		it.second->possibility /= n; 
+		it.second->possibility /= (n - 1); 
 
 		double amount = 0;  // количество переходов в значениях
 		for (auto &pair: it.second->nearestNodes)
 		{
 			amount += pair.second->possOfSwitch;
-
-
 		}
 		for (auto &pair : it.second->nearestNodes)
 		{
@@ -132,9 +137,9 @@ double** Model<DATA_SET>::retMatrixConnexion()
 		for (size_t q = 0; q < array.size(); q++)  
 		{
 			//6 если взятая ближайшая нода совпадает с индексом нашего асоциативного массива записываем по индексу вероятность перехода к этой ноде 
-			if (val->nearestNodes.find(array.find(i)->second) != val->nearestNodes.end())
+			if (val->nearestNodes.find(array.find(q)->second) != val->nearestNodes.end())
 			{
-				connexion[i][q] = val->nearestNodes.find(array.find(i)->second)->second->possOfSwitch;
+				connexion[i][q] = val->nearestNodes.find(array.find(q)->second)->second->possOfSwitch;
 			}
 			//if (val->nearestNodes.find(array.find(i)->second)->second->nearNode->value == array.find(i)->second) {}   //на карандаш жирным шрифтом 
 	

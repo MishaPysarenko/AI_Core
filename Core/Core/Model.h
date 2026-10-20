@@ -42,3 +42,4 @@ public:
 	void loadToFile(std::string fileName);
 };
 
+#include "Model.cpp"
