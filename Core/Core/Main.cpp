@@ -2,6 +2,8 @@
 #include <fstream>
 #include <iostream>
 #include <list>
+#include <windows.h> 
+
 
 size_t defaultHash(TYPE value)
 {
@@ -21,11 +23,26 @@ size_t defaultHash(TYPE value)
 
 void main() 
 {
+	SetConsoleOutputCP(1251);
+	SetConsoleCP(1251);
+
 	std::fstream file("test.txt", std::ios::in);
 	if (!file.is_open())
 	{
 		std::cout << "error open file\n";
 	}
+	bool (*compare)(TYPE, TYPE) = [](TYPE comparedA, TYPE comparedB)
+		{
+			if (comparedB.sizeData != comparedA.sizeData)
+			{
+				return false;
+			}
+			if (comparedA.pData != comparedB.pData)
+			{
+				return false;
+			}return true;
+
+		};
 	Model<std::fstream> test;
 	auto oppWDataSet = [](std::fstream& DataSet)->TYPE* 
 	{
@@ -70,10 +87,23 @@ void main()
 
 	};
 	test.createModel(file, oppWDataSet);
-	auto temp = test.retArrValue();
+	/*auto temp = test.retArrValue();
 	auto temp1 = test.retMatrixConnexion();
-	std::cout << "\t";
-	for (size_t i = 0; i < test.Size(); i++)
+	std::cout << "\t";*/
+
+	std::list<std::string> prompt1;
+	std::string temp3;
+	while (std::getline(std::cin, temp3))
+	{
+		prompt1.push_back(temp3);
+
+	}
+	for (auto it: prompt1)
+	{
+		std::cout << it;
+	}
+	
+	/*for (size_t i = 0; i < test.Size(); i++)
 	{
 		std::string str(
 			static_cast<const char*>(temp[i].pData),
@@ -88,13 +118,30 @@ void main()
 			static_cast<const char*>(temp[i].pData),
 			temp[i].sizeData
 		);
-		std::cout << str << ":\t ";
+		std::cout << str << ":\t\t";
 		for (size_t q = 0; q < test.Size(); q++)
 		{
 			std::cout << temp1[i][q] << "\t";
 		}
 		std::cout << "\n";
 	}
+	std::cout << "\n\n\n";*/
+	//TYPE prompt[] = {
+	//{nullptr, 5, compare, defaultHash},
+	//{const_cast<char*>("team"),     4, compare, defaultHash},
+	//{const_cast<char*>("fortress"), 8, compare, defaultHash},
+	//{const_cast<char*>("two"),      3, compare, defaultHash},
+	//{const_cast<char*>("that"),     4, compare, defaultHash}
+	//};
+	//auto res = test.generationPrompt(prompt, 10);
+	//for (size_t i = 0; i < 10; i++)
+	//{
+	//	std::string str(
+	//		static_cast<const char*>(res[i].pData),
+	//		res[i].sizeData
+	//	);
+	//	std::cout << str << "\t";
+	//}
 }
 
 

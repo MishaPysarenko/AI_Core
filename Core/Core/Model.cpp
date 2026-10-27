@@ -371,6 +371,104 @@ double Model<DATA_SET>::operator!=(Model& compare)
 }
 
 template<typename DATA_SET>
+TYPE* Model<DATA_SET>::generationPrompt(TYPE* prompt, size_t amountToken)
+{
+	size_t amountSizePrompt = prompt[0].sizeData;
+	double avarageValue = 0;
+	double minDiff = 1;
+
+	std::list<TYPE> tempAVG;
+	TYPE min{};
+
+	TYPE* res = new TYPE[amountToken];
+
+	for (size_t i = 1; i < amountSizePrompt; i++)
+	{
+		auto it = valueModel.find(prompt[i]);
+
+		if (it != valueModel.end())
+		{
+			avarageValue += it->second->possibility;
+			tempAVG.push_back(prompt[i]);
+		}
+	}
+
+	if (amountSizePrompt > 1)
+		avarageValue /= (amountSizePrompt - 1);
+
+	auto findNear = [avarageValue](const auto& a) -> TYPE
+		{
+			TYPE nearest{};
+			double minDiff = std::numeric_limits<double>::max();
+
+			for (const auto& it : a)
+			{
+				double diff = std::abs(
+					avarageValue - it.second->possibility 
+				);
+
+				if (diff < minDiff)
+				{
+					minDiff = diff;
+					nearest = it.first;
+				}
+			}
+
+			return nearest;
+		};
+
+
+	auto findNear1 = [avarageValue](const auto& a) -> TYPE
+		{
+			TYPE nearest{};
+			double minDiff = std::numeric_limits<double>::max();
+
+			for (const auto& it : a)
+			{
+				double diff = std::abs(
+					avarageValue - it.second->nearNode->possibility
+				);
+
+				if (diff < minDiff)
+				{
+					minDiff = diff;
+					nearest = it.first;
+				}
+			}
+
+			return nearest;
+		};
+
+	min = findNear(valueModel);
+
+	for (size_t i = 0; i < amountToken; i++)
+	{
+		res[i] = min;
+
+		auto it = valueModel.find(min);
+
+		if (it == valueModel.end())
+			break;
+
+		const auto& nearestNodes = it->second->nearestNodes;
+
+		if (nearestNodes.empty())
+			break;
+
+		if (nearestNodes.size() == 1)
+		{
+			min = nearestNodes.begin()->first;
+		}
+		else
+		{
+			min = findNear1(nearestNodes);
+		}
+	}
+
+	return res;
+}
+
+template<typename DATA_SET>
 void Model<DATA_SET>::saveToFile(std::string fileName)
 {
 	std::fstream file(fileName + ".bin", std::ios::out | std::ios::binary);
