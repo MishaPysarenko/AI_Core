@@ -92,17 +92,65 @@ void main()
 	std::cout << "\t";*/
 
 	std::list<std::string> prompt1;
-	std::string temp3;
-	while (std::getline(std::cin, temp3))
+	std::string temp3,temp4;
+	std::getline(std::cin, temp3);
+	for (size_t i = 0; i < temp3.size(); i++)
 	{
-		prompt1.push_back(temp3);
-
+		if (temp3[i] != ' ')
+		{
+			temp4.push_back(temp3[i]);
+		}
+		else
+		{
+			prompt1.push_back(temp4);
+			temp4.clear();
+		}
 	}
+	prompt1.push_back(temp4);
 	for (auto it: prompt1)
-	{
+	{ 
 		std::cout << it;
 	}
-	
+
+	TYPE* Prompt = new TYPE[prompt1.size()+1];
+	Prompt[0] = { nullptr, prompt1.size() + 1, compare, defaultHash };
+
+	for ( )
+	{
+
+	}
+
+
+
+	auto res = test.generationPrompt(Prompt, prompt1.size() + 1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 	/*for (size_t i = 0; i < test.Size(); i++)
 	{
 		std::string str(
