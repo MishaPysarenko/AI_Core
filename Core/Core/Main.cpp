@@ -107,89 +107,28 @@ void main()
 		}
 	}
 	prompt1.push_back(temp4);
-	for (auto it: prompt1)
-	{ 
-		std::cout << it;
-	}
-
+	
 	TYPE* Prompt = new TYPE[prompt1.size()+1];
 	Prompt[0] = { nullptr, prompt1.size() + 1, compare, defaultHash };
 
-	for ( )
-	{
+	size_t index = 1;
 
+	for (auto str: prompt1)
+	{
+		Prompt[index] = { const_cast<char*> (str.c_str()), str.size(), compare, defaultHash };
 	}
 
-
-
+	
 	auto res = test.generationPrompt(Prompt, prompt1.size() + 1);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-	/*for (size_t i = 0; i < test.Size(); i++)
+	for (size_t i = 0; i < prompt1.size() + 1; i++)
 	{
 		std::string str(
-			static_cast<const char*>(temp[i].pData),
-			temp[i].sizeData
-		);
-		std::cout << str << "\t";
+					static_cast<const char*>(res[i].pData),
+					res[i].sizeData	);
+		std::cout<< str << " ";
 	}
 
-	for (size_t i = 0; i < test.Size(); i++)
-	{
-		std::string str(
-			static_cast<const char*>(temp[i].pData),
-			temp[i].sizeData
-		);
-		std::cout << str << ":\t\t";
-		for (size_t q = 0; q < test.Size(); q++)
-		{
-			std::cout << temp1[i][q] << "\t";
-		}
-		std::cout << "\n";
-	}
-	std::cout << "\n\n\n";*/
-	//TYPE prompt[] = {
-	//{nullptr, 5, compare, defaultHash},
-	//{const_cast<char*>("team"),     4, compare, defaultHash},
-	//{const_cast<char*>("fortress"), 8, compare, defaultHash},
-	//{const_cast<char*>("two"),      3, compare, defaultHash},
-	//{const_cast<char*>("that"),     4, compare, defaultHash}
-	//};
-	//auto res = test.generationPrompt(prompt, 10);
-	//for (size_t i = 0; i < 10; i++)
-	//{
-	//	std::string str(
-	//		static_cast<const char*>(res[i].pData),
-	//		res[i].sizeData
-	//	);
-	//	std::cout << str << "\t";
-	//}
 }
 
 
