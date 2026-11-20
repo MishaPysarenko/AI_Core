@@ -8,9 +8,13 @@ template <typename DATA_SET>
 class Model;
 
 template <typename DATA_SET>
+class FormalLogicEngine;
+
+template <typename DATA_SET>
 class Model
 {
 	friend class Model;// подружили :)
+	friend class FormalLogicEngine<DATA_SET>;// +1 кореш
 	valueChain valueModel;
 public:
 	Model() = default;
