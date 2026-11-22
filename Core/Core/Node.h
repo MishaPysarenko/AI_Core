@@ -1,46 +1,128 @@
 #pragma once
-#include<string>
-#include<vector>
-#include<memory>
+#include <string>
+#include <vector>
+#include <memory>
 #include <unordered_map>
 #include <stdexcept>
 #include <functional>
+#include <typeindex>
+#include <typeinfo>
+#include <utility>
+#include <cstddef>
+
 struct TYPE
 {
-    void* pData = nullptr;
-    size_t sizeData;
+private:
+    std::shared_ptr<const void> pData;
 
-    bool (*compare)(TYPE, TYPE);
-    size_t(*hash)(TYPE);
+    std::type_index dataType{ typeid(void) };
 
-    bool operator==(const TYPE& compared) const
+    std::function<bool(const void*, const void*)> compareFunc;
+    std::function<size_t(const void*)> hashFunc;
+
+    size_t sizeData = 0;
+
+    template<typename T>
+    void set(T value)
     {
-        if (sizeData != compared.sizeData)
-            return false;
+        auto data = std::make_shared<T>(std::move(value));
 
-        if (sizeData == 0)
-            return true;
+        pData = data;
+        dataType = std::type_index(typeid(T));
+        sizeData = sizeof(T);
 
-        if (!pData || !compared.pData)
-            return false;
+        compareFunc = [](const void* a, const void* b)
+            {
+                return *static_cast<const T*>(a) ==
+                    *static_cast<const T*>(b);
+            };
 
-        return std::memcmp(pData, compared.pData, sizeData) == 0;
+        hashFunc = [](const void* data)
+            {
+                return std::hash<T>{}(
+                    *static_cast<const T*>(data)
+                    );
+            };
     }
 
-    bool operator!=(const TYPE& compared) const
+public:
+
+    TYPE() = default;
+
+    size_t size() const noexcept
     {
-        return !(*this == compared);
+        return sizeData;
+    }
+
+    template<typename T>
+    explicit TYPE(T value){set<T>(std::move(value));}
+
+    template<typename T>
+    const T& get() const
+    {
+        if (dataType != std::type_index(typeid(T)))
+            throw std::bad_cast();
+
+        if (!pData)
+            throw std::runtime_error("TYPE is empty");
+
+        return *static_cast<const T*>(pData.get());
+    }
+
+    bool operator==(const TYPE& other) const
+    {
+        if (dataType != other.dataType)
+            return false;
+
+        if (!pData || !other.pData)
+            return !pData && !other.pData;
+
+        return compareFunc(pData.get(), other.pData.get());
+    }
+
+    bool operator!=(const TYPE& other) const
+    {
+        return !(*this == other);
+    }
+
+    size_t hash() const
+    {
+        size_t typeHash = dataType.hash_code();
+
+        if (!pData)
+            return typeHash;
+
+        size_t valueHash = hashFunc(pData.get());
+
+        return typeHash ^ (
+            valueHash + 0x9e3779b9 +
+            (typeHash << 6) +
+            (typeHash >> 2)
+            );
+    }
+
+    std::type_index type() const
+    {
+        return dataType;
+    }
+
+    bool empty() const
+    {
+        return !pData;
     }
 };
 
-template<>
-struct std::hash<TYPE>
+namespace std
 {
-    size_t operator()(const TYPE& value) const
+    template<>
+    struct hash<TYPE>
     {
-        return value.hash(value);
-    }
-};
+        size_t operator()(const TYPE& value) const
+        {
+            return value.hash();
+        }
+    };
+}
 
 struct Node;
 

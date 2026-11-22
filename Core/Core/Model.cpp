@@ -3,33 +3,31 @@
 #include <iostream>
 #include <cstdint>
 
-template <typename DATA_SET>
-Model<DATA_SET>::Model(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet))
+Model::Model(TYPE* dataSet, size_t sizeDataSet)
 {
-	createModel(dataSet, operationsWDataSet);
+	createModel(dataSet, sizeDataSet);
 }
 
-template<typename DATA_SET>
-Model<DATA_SET>::Model(Model<DATA_SET>& A, Model<DATA_SET>& B)
+Model::Model(Model& A, Model& B)
 {
-	Model<DATA_SET>* temp = A + B;
+	Model* temp = A + B;
 	valueModel = temp->valueModel;
 	delete temp;
 }
 
-template<typename DATA_SET>
-Model<DATA_SET>::Model(Model<DATA_SET>& Template)
+Model::Model(Model& Template)
 {
 	valueModel = Template.valueModel;
 }
 
-template <typename DATA_SET>
-void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet))
+void Model::createModel(TYPE* dataSet, size_t sizeDataSet)
 {
-	TYPE* arrayValue = operationsWDataSet(dataSet);
-	size_t n = arrayValue[0].sizeData; //резервирование самого первого элемента массива под сайз(а не как указатель)
+	TYPE* arrayValue = dataSet;
+	size_t n = sizeDataSet;
+	if (arrayValue == nullptr || n == 0)
+		return;
 
-	for (size_t i = 1; i < n - 1; i++)
+	for (size_t i = 0; i < n - 1; i++)
 	{
 		if (valueModel.find(arrayValue[i]) == valueModel.end())
 		{
@@ -90,20 +88,17 @@ void Model<DATA_SET>::createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)
  
 }
 
-template <typename DATA_SET>
-size_t Model<DATA_SET>::Size()
+size_t Model::Size()
 {
 	return valueModel.size();
 }
 
-template <typename DATA_SET>
-void Model<DATA_SET>::clear() 
+void Model::clear() 
 {
 	valueModel.clear();
 }
 
-template <typename DATA_SET>
-TYPE* Model<DATA_SET>::retArrValue()
+TYPE* Model::retArrValue()
 {
 	TYPE* value = new TYPE[valueModel.size()];
 	size_t iterator = 0;
@@ -115,8 +110,7 @@ TYPE* Model<DATA_SET>::retArrValue()
 	return value;
 }
 
-template <typename DATA_SET>
-double** Model<DATA_SET>::retMatrixConnexion()
+double** Model::retMatrixConnexion()
 {
 	//1 создание асоциативного массива с определенным порядком значений и их индексов 
 	double** connexion/*связи*/ = new double* [valueModel.size()];
@@ -154,192 +148,218 @@ double** Model<DATA_SET>::retMatrixConnexion()
 	return connexion;
 }
 
-template<typename DATA_SET>
-Model<DATA_SET>* Model<DATA_SET>::operator+(Model& fusion)
+// Объединение двух моделей
+Model* Model::operator+(Model& fusion)
 {
-	Model<DATA_SET>* NewModel = new Model<DATA_SET> (this);
+	Model* result = new Model();
 
-	for (auto& it : fusion->valueModel)
+	// Создаём независимые узлы из первой модели
+	for (const auto& [key, node] : valueModel)
 	{
-		if (NewModel->valueModel.find(it->first) == NewModel->valueModel.end())
-		{
-			NewModel->valueModel[it->first] = it->second;
+		auto copy = std::make_shared<Node>();
+		copy->value = node->value;
+		copy->possibility = node->possibility;
+		result->valueModel[key] = copy;
+	}
 
-			NewModel->valueModel.find(it->first).second->possibility += fusion.valueModel.find(it.first)->second->possibility;
-			NewModel->valueModel.find(it->first).second->possibility /= 2;
-		}
-		
-		for (auto& nodes : NewModel->valueModel.find(it.first).second->nearestNodes)
+	// Добавляем состояния второй модели
+	for (const auto& [key, node] : fusion.valueModel)
+	{
+		auto it = result->valueModel.find(key);
+
+		if (it == result->valueModel.end())
 		{
-			if (it.second->nearestNodes.find(nodes) == NewModel->valueModel.end())
+			auto copy = std::make_shared<Node>();
+			copy->value = node->value;
+			copy->possibility = node->possibility;
+			result->valueModel[key] = copy;
+		}
+		else
+		{
+			it->second->possibility =
+				(it->second->possibility +
+					node->possibility) / 2.0;
+		}
+	}
+
+	// Переносим связи первой модели
+	for (const auto& [key, node] : valueModel)
+	{
+		auto current = result->valueModel.at(key);
+
+		for (const auto& [nearKey, pair] : node->nearestNodes)
+		{
+			auto target = result->valueModel.find(nearKey);
+
+			if (target == result->valueModel.end())
+				continue;
+
+			auto newPair = std::make_shared<Pair>();
+			newPair->nearNode = target->second;
+			newPair->possOfSwitch = pair->possOfSwitch;
+
+			current->nearestNodes[nearKey] = newPair;
+		}
+	}
+
+	// Объединяем связи второй модели
+	for (const auto& [key, node] : fusion.valueModel)
+	{
+		auto current = result->valueModel.at(key);
+
+		for (const auto& [nearKey, pair] : node->nearestNodes)
+		{
+			auto target = result->valueModel.find(nearKey);
+
+			if (target == result->valueModel.end())
+				continue;
+
+			auto existing = current->nearestNodes.find(nearKey);
+
+			if (existing == current->nearestNodes.end())
 			{
-				nodes->nearestNodes[it.first] = it.second->nearestNodes.find(it.first);
+				auto newPair = std::make_shared<Pair>();
+				newPair->nearNode = target->second;
+				newPair->possOfSwitch = pair->possOfSwitch;
+
+				current->nearestNodes[nearKey] = newPair;
 			}
 			else
 			{
-
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
+				existing->second->possOfSwitch =
+					(existing->second->possOfSwitch +
+						pair->possOfSwitch) / 2.0;
 			}
-			
 		}
 	}
+
+	return result;
 }
 
-template<typename DATA_SET>
-Model<DATA_SET>* Model<DATA_SET>::operator-(Model& fusion)
+// Вычитание двух моделей
+Model* Model::operator-(Model& fusion)
 {
-	Model<DATA_SET>* NewModel = new Model<DATA_SET>(this);
+	Model* result = new Model();
 
-	for (auto& it : fusion->valueModel)
+	// Копируем состояния первой модели
+	for (const auto& [key, node] : valueModel)
 	{
-		if (NewModel->valueModel.find(it.first) != NewModel->valueModel.end())
-		{
-			NewModel->valueModel.find(it->first).second->possibility *= 2;
-			NewModel->valueModel.find(it->first).second->possibility -= fusion.valueModel.find(it.first)->second->possibility;
-		}
+		auto copy = std::make_shared<Node>();
+		copy->value = node->value;
+		copy->possibility = node->possibility;
 
-		if (NewModel->valueModel.find(it->first) != NewModel->valueModel.end())
-		{
-			for (auto i = NewModel->valueModel.begin(); i != NewModel->valueModel.end();)
-			{
-				if (it->first == i->first)
-				{
-					i = NewModel->valueModel.erase(i);
-					break;
-				}
-				else
-				{
-					++i;
-				}
-			}
-		}
+		result->valueModel[key] = copy;
+	}
 
-		for (auto& nodes : NewModel->valueModel.find(it.first).second->nearestNodes)
+	// Вычитаем вероятности состояний
+	for (const auto& [key, node] : fusion.valueModel)
+	{
+		auto it = result->valueModel.find(key);
+
+		if (it == result->valueModel.end())
+			continue;
+
+		it->second->possibility = std::max(
+			0.0,
+			2.0 * it->second->possibility -
+			node->possibility
+		);
+	}
+
+	// Копируем связи первой модели и вычитаем совпадающие
+	for (const auto& [key, node] : valueModel)
+	{
+		auto current = result->valueModel.at(key);
+
+		auto fusionNode = fusion.valueModel.find(key);
+
+		for (const auto& [nearKey, pair] : node->nearestNodes)
 		{
-			if (it.second->nearestNodes.find(nodes) == NewModel->valueModel.end())
+			double probability = pair->possOfSwitch;
+
+			if (fusionNode != fusion.valueModel.end())
 			{
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch *= 2;
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch -= fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
-			}
-			else
-			{
-				for (auto q = NewModel->valueModel.find(it.first).second->nearestNodes.begin();q != NewModel->valueModel.find(it.first).second->nearestNodes.end();)
+				auto otherPair =
+					fusionNode->second->nearestNodes.find(nearKey);
+
+				if (otherPair !=
+					fusionNode->second->nearestNodes.end())
 				{
-					if (it->first == q->first)
-					{
-						q = NewModel->valueModel.erase(q);
-						break;
-					}
-					else
-					{
-						++q;
-					}
+					probability = std::max(
+						0.0,
+						2.0 * probability -
+						otherPair->second->possOfSwitch
+					);
 				}
 			}
+
+			if (probability <= 0.0)
+				continue;
+
+			auto target = result->valueModel.find(nearKey);
+
+			if (target == result->valueModel.end())
+				continue;
+
+			auto newPair = std::make_shared<Pair>();
+			newPair->nearNode = target->second;
+			newPair->possOfSwitch = probability;
+
+			current->nearestNodes[nearKey] = newPair;
 		}
 	}
+
+	return result;
 }
 
-template<typename DATA_SET>
-void Model<DATA_SET>::operator=(Model& copy)
+void Model::operator=(Model& copy)
 {
 	valueModel = copy.valueModel;
 }
 
-template<typename DATA_SET>
-void Model<DATA_SET>::operator+=(Model& fusion)
+// Объединение с текущей моделью
+void Model::operator+=(Model& fusion)
 {
-	for (auto &it : fusion->valueModel)
-	{
-		if (valueModel.find(it->first) == valueModel.end())
-		{
-			valueModel[it->first] = it->second;
+	// Сначала создаём независимую результирующую модель
+	std::unique_ptr<Model> result((*this) + fusion);
 
-			valueModel.find(it->first).second->possibility += fusion.valueModel.find(it.first)->second->possibility;
-			valueModel.find(it->first).second->possibility /= 2;
-		}
-		//добавить недостающие связи
-		// у связей коотрые былa веротность перехода сделать среднее ареф.
-		for (auto& nodes : valueModel.find(it.first).second->nearestNodes)
-		{
-			if (it.second->nearestNodes.find(nodes) == valueModel.end())
-			{
-				nodes->nearestNodes[it.first] = it.second->nearestNodes.find(it.first);
-			}
-			else
-			{
-
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch += fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch /= 2;
-			}
-//fusion value model взять потом ит ферст потом найти в нашем валую модел ит ферст и потом сравнить неарнодс и сравнить каждую связь к ноде и если не совпали добавить в наш модел по ит феспт по неарнод новую связь и потом у этих связей среддне ариф 
-		}
-	}
+	// Переносим новую структуру
+	valueModel = std::move(result->valueModel);
 }
 
-template<typename DATA_SET>
-void Model<DATA_SET>::operator-=(Model& fusion)
+// Вычитание из текущей модели
+void Model::operator-=(Model& fusion)
 {
+	std::unique_ptr<Model> result((*this) - fusion);
 
-	for (auto &it : fusion->valueModel)
+	valueModel = std::move(result->valueModel);
+}
+
+double Model::operator==(Model& compare)
+{
+	double equalElements = 0;
+
+	for (auto it : compare.valueModel)
 	{
 		if (valueModel.find(it.first) != valueModel.end())
 		{
-			valueModel.find(it->first).second->possibility *= 2;
-			valueModel.find(it->first).second->possibility -= fusion.valueModel.find(it.first)->second->possibility;
-		}
-		
-		if (valueModel.find(it->first) != valueModel.end())
-		{
-			for (auto i = valueModel.begin(); i != valueModel.end();)
-			{
-				if (it->first == i->first) 
-				{
-					i = valueModel.erase(i);
-					break;
-				}
-				else 
-				{
-					++i;
-				}	
-			}
-		}
-
-		for (auto& nodes : valueModel.find(it.first).second->nearestNodes)
-		{
-			if (it.second->nearestNodes.find(nodes) == valueModel.end())
-			{
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch *= 2;
-				it.second->nearestNodes.find(it.first)->second->possOfSwitch -= fusion->valueModel.find(it.first)->second->nearestNodes.find(it.first)->second->possOfSwitch;
-			}
-			else
-			{
-				for (auto q = valueModel.find(it.first).second->nearestNodes.begin(); q != valueModel.find(it.first).second->nearestNodes.end();)
-				{
-					if (it->first == q->first)
-					{
-						q = valueModel.erase(q);
-						break;
-					}
-					else
-					{
-						++q;
-					}
-				}
-			}
+			equalElements++;
 		}
 	}
+	if (equalElements == 0)
+	{
+		return 0;
+	}
+	return valueModel.size() / equalElements;
 }
 
-template<typename DATA_SET>
-double Model<DATA_SET>::operator==(Model& compare)
+double Model::operator!=(Model& compare)
 {
 	double equalElements = 0;
 
-	for (auto it : compare->valueModel)
+	for (auto it : compare.valueModel)
 	{
-		if (valueModel.find(it->first) != valueModel.end())
+		if (valueModel.find(it.first) == valueModel.end())
 		{
 			equalElements++;
 		}
@@ -351,27 +371,7 @@ double Model<DATA_SET>::operator==(Model& compare)
 	return valueModel.size() / equalElements;
 }
 
-template<typename DATA_SET>
-double Model<DATA_SET>::operator!=(Model& compare)
-{
-	double equalElements = 0;
-
-	for (auto it : compare->valueModel)
-	{
-		if (valueModel.find(it->first) == valueModel.end())
-		{
-			equalElements++;
-		}
-	}
-	if (equalElements == 0)
-	{
-		return 0;
-	}
-	return valueModel.size() / equalElements;
-}
-
-template<typename DATA_SET>
-TYPE* Model<DATA_SET>::generationPrompt(TYPE* prompt, size_t amountToken)
+TYPE* Model::generationPrompt(TYPE* prompt, size_t amountToken)
 {
 	size_t amountSizePrompt = prompt[0].sizeData;
 	double avarageValue = 0;
@@ -468,104 +468,102 @@ TYPE* Model<DATA_SET>::generationPrompt(TYPE* prompt, size_t amountToken)
 	return res;
 }
 
-template<typename DATA_SET>
-void Model<DATA_SET>::saveToFile(std::string fileName)
+void Model::saveToFile(std::string fileName)
 {
-	std::fstream file(fileName + ".bin", std::ios::out | std::ios::binary);
+	//std::fstream file(fileName + ".bin", std::ios::out | std::ios::binary);
 
-	size_t memoryUsed;
+	//size_t memoryUsed;
 
-	file.write(reinterpret_cast<const char*>(&valueModel.size()), sizeof(valueModel.size()));
-	
-	for (auto it: valueModel)
-	{
-		memoryUsed = sizeof(it->second->value);
-		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value)); 
+	//file.write(reinterpret_cast<const char*>(&valueModel.size()), sizeof(valueModel.size()));
+	//
+	//for (auto it: valueModel)
+	//{
+	//	memoryUsed = sizeof(it->second->value);
+	//	file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value)); 
 
-		memoryUsed = sizeof(it->second->possibility);
-		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-		file.write(reinterpret_cast<const char*>(&it->second->possibility), sizeof(it->second->possibility));
+	//	memoryUsed = sizeof(it->second->possibility);
+	//	file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.write(reinterpret_cast<const char*>(&it->second->possibility), sizeof(it->second->possibility));
 
-	}	
+	//}	
 
-	for (auto it : valueModel)
-	{
-		memoryUsed = sizeof(it->second->value);
-		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-		file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value));
+	//for (auto it : valueModel)
+	//{
+	//	memoryUsed = sizeof(it->second->value);
+	//	file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.write(reinterpret_cast<const char*>(&it->second->value), sizeof(it->second->value));
 
-		memoryUsed = sizeof(it->second->nearestNodes.size());
-		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-		file.write(reinterpret_cast<const char*>(&it->second->nearestNodes.size()), sizeof(it->second->nearestNodes.size()));
+	//	memoryUsed = sizeof(it->second->nearestNodes.size());
+	//	file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.write(reinterpret_cast<const char*>(&it->second->nearestNodes.size()), sizeof(it->second->nearestNodes.size()));
 
-		for (auto pair : it->second->nearestNodes)
-		{
-			memoryUsed = sizeof(pair->second->nearNode->value);
-			file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-			file.write(reinterpret_cast<const char*>(&pair->second->nearNode->value), sizeof(pair->second->nearNode->value));
+	//	for (auto pair : it->second->nearestNodes)
+	//	{
+	//		memoryUsed = sizeof(pair->second->nearNode->value);
+	//		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//		file.write(reinterpret_cast<const char*>(&pair->second->nearNode->value), sizeof(pair->second->nearNode->value));
 
-			memoryUsed = sizeof(pair->second->possOfSwitch);
-			file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
-			file.write(reinterpret_cast<const char*>(&pair->second->possOfSwitch), sizeof(pair->second->possOfSwitch));
+	//		memoryUsed = sizeof(pair->second->possOfSwitch);
+	//		file.write(reinterpret_cast<const char*>(&memoryUsed), sizeof(memoryUsed));
+	//		file.write(reinterpret_cast<const char*>(&pair->second->possOfSwitch), sizeof(pair->second->possOfSwitch));
 
-		}
-	}
+	//	}
+	//}
 }
 
-template<typename DATA_SET>
-void Model<DATA_SET>::loadToFile(std::string fileName)
+void Model::loadToFile(std::string fileName)
 {
-	std::ifstream file(fileName, std::iostream::binary);
-	valueModel.clear();
-	
-	size_t memoryUsed;
+	//std::ifstream file(fileName, std::iostream::binary);
+	//valueModel.clear();
+	//
+	//size_t memoryUsed;
 
-	constexpr std::size_t BLOCK_SIZE = 1024;
+	//constexpr std::size_t BLOCK_SIZE = 1024;
 
-	std::array<uint8_t, BLOCK_SIZE> buffer;
+	//std::array<uint8_t, BLOCK_SIZE> buffer;
 
-	TYPE tempValue;
-	double tempPoss;
-	size_t tempAmountNearNodes;
-	size_t tempNearNode;
-	size_t tempAmountValue;
-	double tempPossOfSwitch;
+	//TYPE tempValue;
+	//double tempPoss;
+	//size_t tempAmountNearNodes;
+	//size_t tempNearNode;
+	//size_t tempAmountValue;
+	//double tempPossOfSwitch;
 
-	file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
+	//file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
 
-	for (size_t i = 0; i < tempAmountValue; i++)
-	{
-		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
+	//for (size_t i = 0; i < tempAmountValue; i++)
+	//{
+	//	file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
 
-		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-		file.read(reinterpret_cast<char*>(&tempPoss), sizeof(tempPoss));
+	//	file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.read(reinterpret_cast<char*>(&tempPoss), sizeof(tempPoss));
 
-		valueModel[tempValue] = { tempValue,tempPoss,{} };
-	}
+	//	valueModel[tempValue] = { tempValue,tempPoss,{} };
+	//}
 
 
-	while (file)
-	{
-		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
+	//while (file)
+	//{
+	//	file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
 
-		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-		file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
+	//	file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//	file.read(reinterpret_cast<char*>(&tempAmountValue), sizeof(tempAmountValue));
 
-		auto tempNode = valueModel.find(tempValue)->second;
+	//	auto tempNode = valueModel.find(tempValue)->second;
 
-		for (size_t i = 0; i < tempAmountValue; i++)
-		{
-			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-			file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
+	//	for (size_t i = 0; i < tempAmountValue; i++)
+	//	{
+	//		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//		file.read(reinterpret_cast<char*>(&tempValue), memoryUsed);
 
-			file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
-			file.read(reinterpret_cast<char*>(&tempPossOfSwitch), sizeof(tempPossOfSwitch));
+	//		file.read(reinterpret_cast<char*>(&memoryUsed), sizeof(memoryUsed));
+	//		file.read(reinterpret_cast<char*>(&tempPossOfSwitch), sizeof(tempPossOfSwitch));
 
-			tempNode->nearestNodes[tempValue] = { valueModel.find(tempValue), tempPossOfSwitch };
-		}
-	}
+	//		tempNode->nearestNodes[tempValue] = { valueModel.find(tempValue), tempPossOfSwitch };
+	//	}
+	//}
 }
 

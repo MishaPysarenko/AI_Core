@@ -4,25 +4,22 @@
 
 using valueChain = std::unordered_map<TYPE, std::shared_ptr<Node>>; //тип данных значение модели
 
-template <typename DATA_SET>
 class Model;
 
-template <typename DATA_SET>
 class FormalLogicEngine;
 
-template <typename DATA_SET>
 class Model
 {
 	friend class Model;// подружили :)
-	friend class FormalLogicEngine<DATA_SET>;// +1 кореш
+	friend class FormalLogicEngine;// +1 кореш
 	valueChain valueModel;
 public:
 	Model() = default;
-	Model(DATA_SET &dataSet, TYPE*(*operationsWDataSet)(DATA_SET &dataSet));
-	Model(Model<DATA_SET>&A, Model<DATA_SET>& B);
-	Model(Model<DATA_SET>& Template);
+	Model(TYPE* dataSet, size_t sizeDataSet);
+	Model(Model&A, Model& B);
+	Model(Model& Template);
 	void clear();
-	void createModel(DATA_SET &dataSet, TYPE* (*operationsWDataSet)(DATA_SET &dataSet));
+	void createModel(TYPE* dataSet,size_t sizeDataSet);
 	size_t Size();
 	TYPE* retArrValue();
 	double** retMatrixConnexion();
@@ -45,5 +42,3 @@ public:
 
 	void loadToFile(std::string fileName);
 };
-
-#include "Model.cpp"

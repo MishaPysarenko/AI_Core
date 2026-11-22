@@ -4,85 +4,35 @@
 #include <list>
 #include <windows.h> 
 
-size_t defaultHash(TYPE value)
+std::pair<TYPE*, size_t> oppWDataSet(std::fstream& DataSet)
 {
-	const unsigned char* data =
-		static_cast<const unsigned char*>(value.pData);
+	std::vector<std::string> tempdataset;
+	std::string data;
 
-	size_t hash = 14695981039346656037ull;
-
-	for (size_t i = 0; i < value.sizeData; i++)
+	while (DataSet >> data)
 	{
-		hash ^= data[i];
-		hash *= 1099511628211ull;
+		tempdataset.push_back(data);
 	}
 
-	return hash;
+	size_t amountData = tempdataset.size();
+
+	TYPE* resData = new TYPE[amountData];
+
+	for (size_t i = 0; i < amountData; i++)
+	{
+		resData[i] = TYPE(tempdataset[i]);
+	}
+
+	return { resData, amountData };
 }
-
-bool (*compare)(TYPE, TYPE) = [](TYPE comparedA, TYPE comparedB)
-	{
-		if (comparedB.sizeData != comparedA.sizeData)
-		{
-			return false;
-		}
-		if (comparedA.pData != comparedB.pData)
-		{
-			return false;
-		}return true;
-
-	};
-
-auto oppWDataSet = [](std::fstream& DataSet)->TYPE*
-	{
-		std::string data;
-		std::list<std::string> tempdataset;
-		size_t amountData = 0;
-
-		while (std::getline(DataSet, data, ' '))
-		{
-			tempdataset.push_back(data);
-			amountData++;
-		}
-
-		TYPE* resData = new TYPE[amountData + 1];
-		resData[0].sizeData = amountData + 1;
-		size_t i = 1;
-		for (auto it : tempdataset)
-		{
-			char* tempVal = new char[it.size()];
-			for (size_t i = 0; i < it.size(); i++)
-				tempVal[i] = it[i];
-
-			resData[i].pData = tempVal;
-			resData[i].sizeData = it.size();
-			resData[i].compare = [](TYPE comparedA, TYPE comparedB)
-				{
-					if (comparedB.sizeData != comparedA.sizeData)
-					{
-						return false;
-					}
-					if (comparedA.pData != comparedB.pData)
-					{
-						return false;
-					}return true;
-
-				};
-			resData[i].hash = defaultHash;
-			i++;
-
-		}
-		return resData;
-
-	};
 
 void showListConnection(TYPE* val, double** connection, size_t size)
 {
 	for (size_t i = 0; i < size; i++)
 	{
 		std::string from(
-			static_cast<const char*>(val[i].pData),
-			val[i].sizeData
+			val[i].get<const char*>(),
+			val[i].size()
 		);
 
 		for (size_t j = 0; j < size; j++)
@@ -90,8 +40,8 @@ void showListConnection(TYPE* val, double** connection, size_t size)
 			if (connection[i][j] != 0.0)
 			{
 				std::string to(
-					static_cast<const char*>(val[j].pData),
-					val[j].sizeData
+					val[i].get<const char*>(),
+					val[i].size()
 				);
 
 				std::cout << from
@@ -123,15 +73,15 @@ void showChains(TYPE* val, double** connection,size_t size,size_t current,std::v
 			for (size_t k : path)
 			{
 				std::string str(
-					static_cast<const char*>(val[k].pData),
-					val[k].sizeData
+					val[k].get<const char*>(),
+					val[k].size()
 				);
 				std::cout << str << " -> ";
 			}
 
 			std::string str(
-				static_cast<const char*>(val[j].pData),
-				val[j].sizeData
+				val[j].get<const char*>(),
+				val[j].size()
 			);
 
 			std::cout << str << " [REPEAT]\n";
@@ -156,8 +106,8 @@ void showChains(TYPE* val, double** connection,size_t size,size_t current,std::v
 			for (size_t k = 0; k < path.size(); k++)
 			{
 				std::string str(
-					static_cast<const char*>(val[path[k]].pData),
-					val[path[k]].sizeData
+					val[k].get<const char*>(),
+					val[k].size()
 				);
 
 				std::cout << str;
@@ -203,10 +153,13 @@ void main()
 		std::cout << "error open file\n";
 	}
 
-	Model<std::fstream> test;
-	
-	test.createModel(file, oppWDataSet);
 	/*
+	Model test;
+	
+	auto dataSet = oppWDataSet(file);
+
+	test.createModel(dataSet);
+	
 	std::cout << "\nConnection\n";
 
 	showListConnection(test.retArrValue(), test.retMatrixConnexion(), test.Size());

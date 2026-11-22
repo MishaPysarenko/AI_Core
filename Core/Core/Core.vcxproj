@@ -126,8 +126,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="FormalLogicEngine.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClInclude Include="Model.cpp" />
+    <ClInclude Include="FormalLogicEngine.h" />
+    <ClCompile Include="Model.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Model.h" />
